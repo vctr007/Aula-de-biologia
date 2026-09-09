@@ -987,30 +987,20 @@
 
         if (pontos === perguntas.length)  {
 
-            mensagem =
-                "🔥 PERFEITO! Você dominou os principais grupos de animais!";
-
-        } else if (pontos >= 8) {
-
-            mensagem =
-                "👏 Muito bom! Você está mandando muito bem em Zoologia!";
-
-        } else if (pontos >= 6) {
-
-            mensagem =
-                "👍 Bom trabalho! Só precisa revisar alguns conceitos.";
-
-        } else if (pontos >= 4) {
-
-            mensagem =
-                "📚 Está no caminho! Que tal revisar o conteúdo?";
-
-        } else {
-
-            mensagem =
-                "💪 Não desista! Revise o conteúdo e tente novamente.";
-
-        }
+          "🔥 PERFEITO! Você dominou os principais grupos de animais!";
+} else if (pontos >= 16) {
+    mensagem =
+        "👏 Muito bom! Você está mandando muito bem em Zoologia!";
+} else if (pontos >= 12) {
+    mensagem =
+        "👍 Bom trabalho! Só precisa revisar alguns conceitos.";
+} else if (pontos >= 8) {
+    mensagem =
+        "📚 Está no caminho! Que tal revisar o conteúdo?";
+} else {
+    mensagem =
+        "💪 Não desista! Revise o conteúdo e tente novamente.";
+}
 
 
         document.getElementById("mensagemFinal").textContent =
