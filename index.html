@@ -370,7 +370,7 @@
         </p>
 
         <div class="resultado-pontos">
-            <span id="pontuacaoFinal">0</span>/10
+        <span id="pontuacaoFinal">0</span>/<span id="totalPerguntas">0</span>
         </div>
 
         <div class="mensagem" id="mensagemFinal">
@@ -574,7 +574,7 @@
                 "<strong>Corpo mole!</strong><br><br>" +
                 "Os moluscos possuem corpo mole e muitos apresentam " +
                 "uma concha, embora nem todos tenham uma concha externa."
-        }
+        },
         {
     animal: "imagens/criativo1.jpg",
  
@@ -985,7 +985,7 @@
         let mensagem = "";
 
 
-        if (pontos === 10) {
+        if (pontos === perguntas.length)  {
 
             mensagem =
                 "🔥 PERFEITO! Você dominou os principais grupos de animais!";
