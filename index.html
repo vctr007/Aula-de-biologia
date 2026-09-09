@@ -1020,7 +1020,38 @@
         document.getElementById("mensagemFinal").textContent =
             mensagem;
     }
+document.getElementById("mensagemFinal").textContent =
+    mensagem;
 
+
+// =====================================
+// ENVIAR RESULTADO PARA GOOGLE PLANILHA
+// =====================================
+
+const resultadoAluno = {
+
+    nome: "Aluno",
+    acertos: pontos,
+    total: perguntas.length,
+    porcentagem: Math.round((pontos / perguntas.length) * 100),
+    data: new Date().toLocaleString("pt-BR")
+
+};
+
+
+fetch("COLE_AQUI_O_LINK_DO_APPS_SCRIPT", {
+
+    method: "POST",
+
+    mode: "no-cors",
+
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+    },
+
+    body: JSON.stringify(resultadoAluno)
+
+};
 
     // =====================================
     // REINICIAR
