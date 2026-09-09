@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Desafio dos Animais</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f5132, #198754, #75b798);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* TELA INICIAL */
+
+        #inicio {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #14532d;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .subtitulo {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .info {
+            background: #e9f7ef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            color: #14532d;
+            line-height: 1.6;
+        }
+
+        .botao {
+            border: none;
+            border-radius: 12px;
+            padding: 16px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .botao-principal {
+            background: #198754;
+            color: white;
+        }
+
+        .botao-principal:hover {
+            background: #146c43;
+            transform: scale(1.03);
+        }
+
+        /* QUIZ */
+
+        #quiz {
+            display: none;
+        }
+
+        .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .contador {
+            color: #198754;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .pontuacao {
+            background: #e9f7ef;
+            color: #14532d;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .barra-container {
+            width: 100%;
+            height: 12px;
+            background: #ddd;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .barra {
+            height: 100%;
+            width: 0%;
+            background: #198754;
+            transition: width 0.3s;
+        }
+
+        .animal {
+            text-align: center;
+            font-size: 110px;
+            margin-bottom: 10px;
+        }
+
+        .pergunta {
+            text-align: center;
+            font-size: 27px;
+            color: #222;
+            margin-bottom: 25px;
+        }
+
+        .alternativas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .alternativa {
+            padding: 18px;
+            border: 2px solid #ddd;
+            border-radius: 14px;
+            background: white;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .alternativa:hover {
+            border-color: #198754;
+            background: #f0fff6;
+            transform: translateY(-2px);
+        }
+
+        .alternativa.correta {
+            background: #d1e7dd;
+            border-color: #198754;
+            color: #0f5132;
+        }
+
+        .alternativa.errada {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #842029;
+        }
+
+        .explicacao {
+            display: none;
+            margin-top: 25px;
+            padding: 18px;
+            background: #f1f8f4;
+            border-left: 5px solid #198754;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .explicacao strong {
+            color: #14532d;
+        }
+
+        .proxima {
+            display: none;
+            margin: 25px auto 0;
+            background: #198754;
+            color: white;
+        }
+
+        .proxima:hover {
+            background: #146c43;
+        }
+
+        /* RESULTADO */
+
+        #resultado {
+            display: none;
+            text-align: center;
+        }
+
+        .trofeu {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+
+        .resultado-titulo {
+            color: #14532d;
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .resultado-pontos {
+            font-size: 55px;
+            font-weight: bold;
+            color: #198754;
+            margin: 20px;
+        }
+
+        .mensagem {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .resumo {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        /* RESPONSIVO */
+
+        @media (max-width: 650px) {
+
+            .container {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .alternativas {
+                grid-template-columns: 1fr;
+            }
+
+            .animal {
+                font-size: 80px;
+            }
+
+            .pergunta {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ========================= -->
+    <!-- TELA INICIAL -->
+    <!-- ========================= -->
+
+    <section id="inicio">
+
+        <div class="logo">🐾🧬🌎</div>
+
+        <h1>Desafio dos Animais</h1>
+
+        <p class="subtitulo">
+            Principais grupos de animais
+        </p>
+
+        <div class="info">
+            <strong>📚 Conteúdo:</strong><br>
+
+            Poríferos • Cnidários • Platelmintos •
+            Nematelmintos • Moluscos
+
+            <br><br>
+
+            Teste seus conhecimentos e descubra
+            quantos pontos você consegue fazer!
+        </div>
+
+        <button class="botao botao-principal" onclick="iniciarQuiz()">
+            🚀 COMEÇAR DESAFIO
+        </button>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- QUIZ -->
+    <!-- ========================= -->
+
+    <section id="quiz">
+
+        <div class="topo">
+
+            <div class="contador" id="contador">
+                Questão 1 de 10
+            </div>
+
+            <div class="pontuacao">
+                ⭐ Pontos: <span id="pontos">0</span>
+            </div>
+
+        </div>
+
+        <div class="barra-container">
+            <div class="barra" id="barra"></div>
+        </div>
+
+        <div class="animal" id="animal">
+            🧽
+        </div>
+
+        <h2 class="pergunta" id="pergunta">
+            Pergunta
+        </h2>
+
+        <div class="alternativas" id="alternativas">
+        </div>
+
+        <div class="explicacao" id="explicacao">
+        </div>
+
+        <button
+            class="botao proxima"
+            id="proxima"
+            onclick="proximaQuestao()">
+
+            ➡️ PRÓXIMA QUESTÃO
+
+        </button>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- RESULTADO -->
+    <!-- ========================= -->
+
+    <section id="resultado">
+
+        <div class="trofeu">
+            🏆
+        </div>
+
+        <h2 class="resultado-titulo">
+            Desafio concluído!
+        </h2>
+
+        <p>
+            Sua pontuação foi:
+        </p>
+
+        <div class="resultado-pontos">
+            <span id="pontuacaoFinal">0</span>/10
+        </div>
+
+        <div class="mensagem" id="mensagemFinal">
+        </div>
+
+        <div class="resumo">
+
+            <strong>📖 Conteúdos trabalhados:</strong>
+
+            <br>
+
+             Poríferos<br>
+             Cnidários<br>
+             Platelmintos<br>
+             Nematelmintos<br>
+             Moluscos
+
+        </div>
+
+        <button
+            class="botao botao-principal"
+            onclick="reiniciarQuiz()">
+
+            🔄 JOGAR NOVAMENTE
+
+        </button>
+
+    </section>
+
+</div>
+
+
+<script>
+
+    // =====================================
+    // PERGUNTAS
+    // =====================================
+
+    const perguntas = [
+
+        {
+            animal: "imagens/polifero1.jpg",
+            pergunta: "As esponjas-do-mar pertencem a qual grupo?",
+            alternativas: [
+                "Poríferos",
+                "Cnidários",
+                "Platelmintos",
+                "Nematelmintos",
+                "Moluscos"
+            ],
+            correta: 0,
+            explicacao:
+                "<strong>Poríferos!</strong><br><br>" +
+             "As esponjas são animais aquáticos que possuem " +
+              "diversos poros no corpo, por onde a água circula."
+        }, 
+
+        {
+            animal: "imagens/Aguaviva.jpg",
+            pergunta: "Águas-vivas e corais pertencem a qual grupo?",
+            alternativas: [
+                "Moluscos",
+                "Cnidários",
+                "Nematelmintos",
+                "Poríferos",
+                "platelmintos",
+            ],
+            correta: 1,
+            explicacao:
+                "<strong>Cnidários!</strong><br><br>" +
+                "Águas-vivas, corais, anêmonas e hidras fazem parte " +
+                "desse grupo. Eles possuem células especiais chamadas cnidócitos."
+        },
+
+        {
+            animal: "imagens/planaria.jpg",
+            pergunta: "A planária é um exemplo de qual grupo?",
+            alternativas: [
+                "Platelmintos",
+                "Moluscos",
+                "Poríferos",
+                "Cnidários",
+                "Nematelmintos"
+            ],
+            correta: 0,
+            explicacao:
+                "<strong>Platelmintos!</strong><br><br>" +
+                "Os platelmintos possuem corpo achatado. " +
+                "A planária é um exemplo de platelminto de vida livre."
+        },
+
+        {
+            animal: "imagens/lombriga.jpg",
+            pergunta: "A lombriga pertence a qual grupo?",
+            alternativas: [
+                "Cnidários",
+                "Poríferos",
+                "Nematelmintos",
+                "Moluscos",
+                "Platelmintos",
+            ],
+            correta: 2,
+            explicacao:
+                "<strong>Nematelmintos!</strong><br><br>" +
+                "As lombrigas pertencem ao grupo dos nematelmintos, " +
+                "que apresentam corpo cilíndrico e não segmentado."
+        },
+
+        {
+            animal: "imagens/caracol.jpg",
+            pergunta: "Caracóis, lesmas e ostras pertencem a qual grupo?",
+            alternativas: [
+                "Platelmintos",
+                "Moluscos",
+                "Cnidários",
+                "Nematelmintos",
+                "Poríferos",
+            ],
+            correta: 1,
+            explicacao:
+                "<strong>Moluscos!</strong> <br><br>" +
+                "Os moluscos possuem corpo mole. Alguns apresentam " +
+                "concha, como os caracóis e as ostras."
+        },
+
+        {
+            animal: "imagens/cachorro.jpg",
+            pergunta: "Qual característica é típica dos poríferos?",
+            alternativas: [
+                "Possuem corpo cheio de poros",
+                "Possuem tentáculos com cnidócitos",
+                "Possuem concha",
+                "Possuem corpo segmentado"
+            ],
+            correta: 0,
+            explicacao:
+                "<strong>Corpo cheio de poros!</strong> <br><br>" +
+                "O nome Porífera está relacionado justamente à presença " +
+                "de muitos poros no corpo desses animais."
+        },
+
+        {
+            animal: "imagens/chocad.jpg",
+            pergunta: "Qual estrutura é característica dos cnidários?",
+            alternativas: [
+                "Cnidócitos",
+                "Concha",
+                "Poros",
+                "Pé muscular"
+            ],
+            correta: 0,
+            explicacao:
+                "<strong>Cnidócitos!</strong> <br><br>" +
+                "São células especializadas usadas principalmente na " +
+                "defesa e captura de alimento."
+        },
+
+        {
+            animal: "imagens/fogo.jpg",
+            pergunta: "Uma característica dos platelmintos é:",
+            alternativas: [
+                "Corpo achatado",
+                "Corpo coberto por concha",
+                "Corpo cheio de poros",
+                "Presença de cnidócitos"
+            ],
+            correta: 0,
+            explicacao:
+                "<strong>Corpo achatado!</strong><br><br>" +
+                "O termo platelminto está relacionado justamente ao " +
+                "formato achatado do corpo desses animais."
+        },
+
+        {
+            animal: "imagens/economia.jpg",
+            pergunta: "Qual alternativa apresenta um exemplo de nematelminto?",
+            alternativas: [
+                "Água-viva",
+                "Esponja",
+                "Lombriga",
+                "Caracol"
+            ],
+            correta: 2,
+            explicacao:
+                "<strong>Lombriga!</strong><br><br>" +
+                "A lombriga é um nematelminto. Esse grupo apresenta " +
+                "animais com corpo cilíndrico e não segmentado."
+        },
+
+        {
+            animal: "imagens/carangueijo.jpg",
+            pergunta: "Qual característica está relacionada aos moluscos?",
+            alternativas: [
+                "Corpo mole",
+                "Corpo cheio de poros",
+                "Cnidócitos",
+                "Corpo achatado"
+            ],
+            correta: 0,
+            explicacao:
+                "<strong>Corpo mole!</strong><br><br>" +
+                "Os moluscos possuem corpo mole e muitos apresentam " +
+                "uma concha, embora nem todos tenham uma concha externa."
+        }
+
+    ];
+
+
+    // =====================================
+    // VARIÁVEIS
+    // =====================================
+
+    let questaoAtual = 0;
+    let pontos = 0;
+    let respondeu = false;
+
+
+    // =====================================
+    // INICIAR QUIZ
+    // =====================================
+
+    function iniciarQuiz() {
+
+        questaoAtual = 0;
+        pontos = 0;
+
+        document.getElementById("inicio").style.display = "none";
+        document.getElementById("resultado").style.display = "none";
+        document.getElementById("quiz").style.display = "block";
+
+        document.getElementById("pontos").textContent = pontos;
+
+        mostrarQuestao();
+    }
+
+
+    // =====================================
+    // MOSTRAR QUESTÃO
+    // =====================================
+
+    function mostrarQuestao() {
+
+        respondeu = false;
+
+        const pergunta = perguntas[questaoAtual];
+
+        document.getElementById("contador").textContent =
+            "Questão " + (questaoAtual + 1) +
+            " de " + perguntas.length;
+
+        document.getElementById("animal").innerHTML =
+        '<img src="' + pergunta.animal + '" alt="Animal">';
+
+        document.getElementById("pergunta").textContent =
+            pergunta.pergunta;
+
+        document.getElementById("explicacao").style.display =
+            "none";
+
+        document.getElementById("proxima").style.display =
+            "none";
+
+        // Atualizar barra de progresso
+
+        const progresso =
+            ((questaoAtual) / perguntas.length) * 100;
+
+        document.getElementById("barra").style.width =
+            progresso + "%";
+
+
+        // Criar alternativas
+
+        const area =
+            document.getElementById("alternativas");
+
+        area.innerHTML = "";
+
+
+        pergunta.alternativas.forEach(
+            function(alternativa, indice) {
+
+                const botao =
+                    document.createElement("button");
+
+                botao.className = "alternativa";
+
+                botao.textContent =
+                    alternativa;
+
+                botao.onclick =
+                    function() {
+
+                        responder(indice, botao);
+
+                    };
+
+                area.appendChild(botao);
+            }
+        );
+    }
+
+
+    // =====================================
+    // RESPONDER
+    // =====================================
+
+    function responder(indiceEscolhido, botaoClicado) {
+
+        if (respondeu) {
+            return;
+        }
+
+        respondeu = true;
+
+        const pergunta =
+            perguntas[questaoAtual];
+
+        const botoes =
+            document.querySelectorAll(".alternativa");
+
+
+        // Bloquear todos os botões
+
+        botoes.forEach(function(botao) {
+
+            botao.style.cursor = "default";
+
+        });
+
+
+        // Verificar resposta
+
+        if (indiceEscolhido === pergunta.correta) {
+
+            botaoClicado.classList.add("correta");
+
+            pontos++;
+
+            document.getElementById("pontos").textContent =
+                pontos;
+
+        } else {
+
+            botaoClicado.classList.add("errada");
+
+            botoes[pergunta.correta]
+                .classList.add("correta");
+        }
+
+
+        // Mostrar explicação
+
+        document.getElementById("explicacao").innerHTML =
+            pergunta.explicacao;
+
+        document.getElementById("explicacao").style.display =
+            "block";
+
+
+        // Mostrar botão próxima
+
+        document.getElementById("proxima").style.display =
+            "block";
+    }
+
+
+    // =====================================
+    // PRÓXIMA QUESTÃO
+    // =====================================
+
+    function proximaQuestao() {
+
+        questaoAtual++;
+
+        if (questaoAtual < perguntas.length) {
+
+            mostrarQuestao();
+
+        } else {
+
+            mostrarResultado();
+
+        }
+    }
+
+
+    // =====================================
+    // RESULTADO
+    // =====================================
+
+    function mostrarResultado() {
+
+        document.getElementById("quiz").style.display =
+            "none";
+
+        document.getElementById("resultado").style.display =
+            "block";
+
+        document.getElementById("pontuacaoFinal").textContent =
+            pontos;
+
+
+        let mensagem = "";
+
+
+        if (pontos === 10) {
+
+            mensagem =
+                "🔥 PERFEITO! Você dominou os principais grupos de animais!";
+
+        } else if (pontos >= 8) {
+
+            mensagem =
+                "👏 Muito bom! Você está mandando muito bem em Zoologia!";
+
+        } else if (pontos >= 6) {
+
+            mensagem =
+                "👍 Bom trabalho! Só precisa revisar alguns conceitos.";
+
+        } else if (pontos >= 4) {
+
+            mensagem =
+                "📚 Está no caminho! Que tal revisar o conteúdo?";
+
+        } else {
+
+            mensagem =
+                "💪 Não desista! Revise o conteúdo e tente novamente.";
+
+        }
+
+
+        document.getElementById("mensagemFinal").textContent =
+            mensagem;
+    }
+
+
+    // =====================================
+    // REINICIAR
+    // =====================================
+
+    function reiniciarQuiz() {
+
+        document.getElementById("resultado").style.display =
+            "none";
+
+        document.getElementById("inicio").style.display =
+            "block";
+
+    }
+
+</script>
+
+</body>
+</html>
